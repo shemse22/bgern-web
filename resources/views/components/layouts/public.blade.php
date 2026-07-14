@@ -4,6 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Bgern' }}</title>
+    <meta name="description" content="{{ $description ?? 'Free online tools at Bgern.' }}">
+    <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
+    <meta property="og:title" content="{{ $title ?? 'Bgern' }}">
+    <meta property="og:description" content="{{ $description ?? 'Free online tools at Bgern.' }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ $canonical ?? url()->current() }}">
+    <meta name="twitter:card" content="summary">
+    {{ $head ?? '' }}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
@@ -12,12 +20,10 @@
             <a href="/" class="font-bold text-xl text-indigo-600">Bgern</a>
 
             <div class="hidden md:flex items-center gap-6 text-sm text-gray-700">
-                <a href="/" class="hover:text-indigo-600">All Tools</a>
-                
-                 <a href="{{ route('categories.index') }}" class="hover:text-indigo-600">Categories</a>
+                <a href="{{ route('tools.index') }}" class="hover:text-indigo-600">All Tools</a>
+                <a href="{{ route('categories.index') }}" class="hover:text-indigo-600">Categories</a>
                 <a href="/" class="hover:text-indigo-600">Blog</a>
                 <a href="/" class="hover:text-indigo-600">Contact</a>
-                
             </div>
 
             <div class="flex items-center gap-3">

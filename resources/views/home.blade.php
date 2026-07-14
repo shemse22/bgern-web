@@ -7,7 +7,7 @@
                 </h1>
                 <p class="text-gray-600 text-lg mb-8">Bgern provides free, powerful tools to make your life easier. Fast, free, and secure. No sign-up required.</p>
 
-                <form action="{{ route('home') }}" method="GET" class="flex gap-2">
+                <form action="{{ route('tools.index') }}" method="GET" class="flex gap-2">
                     <input
                         type="text"
                         name="q"

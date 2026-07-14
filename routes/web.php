@@ -7,6 +7,16 @@ use App\Http\Controllers\Admin\ToolController as AdminToolController;
 use App\Models\Tool;
 use App\Models\Category;
 
+Route::get('/tools', function () {
+    $query = request('q');
+
+    $tools = Tool::where('is_active', true)
+        ->when($query, fn($q) => $q->where('name', 'like', "%{$query}%"))
+        ->latest()
+        ->get();
+
+    return view('tools.index', ['tools' => $tools]);
+})->name('tools.index');
 
 
 Route::get('/categories', function () {
