@@ -13,9 +13,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 Route::get('/', function () {
-    $tools = Tool::where('is_active', true)->latest()->get();
-    return view('home', ['tools' => $tools]);
-});
+    $query = request('q');
+
+    $tools = Tool::where('is_active', true)
+        ->when($query, fn($q) => $q->where('name', 'like', "%{$query}%"))
+        ->latest()
+        ->get();
+
+    $categories = \App\Models\Category::all();
+
+    return view('home', ['tools' => $tools, 'categories' => $categories]);
+})->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
