@@ -13,9 +13,11 @@
 
             <div class="hidden md:flex items-center gap-6 text-sm text-gray-700">
                 <a href="/" class="hover:text-indigo-600">All Tools</a>
-                <a href="/" class="hover:text-indigo-600">Categories</a>
+                
+                 <a href="{{ route('categories.index') }}" class="hover:text-indigo-600">Categories</a>
                 <a href="/" class="hover:text-indigo-600">Blog</a>
                 <a href="/" class="hover:text-indigo-600">Contact</a>
+                
             </div>
 
             <div class="flex items-center gap-3">

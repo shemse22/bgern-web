@@ -5,6 +5,20 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\Admin\ToolController as AdminToolController;
 use App\Models\Tool;
+use App\Models\Category;
+
+
+
+Route::get('/categories', function () {
+    $categories = Category::withCount('tools')->get();
+    return view('categories.index', ['categories' => $categories]);
+})->name('categories.index');
+
+Route::get('/categories/{slug}', function (string $slug) {
+    $category = Category::where('slug', $slug)->firstOrFail();
+    $tools = $category->tools()->where('is_active', true)->get();
+    return view('categories.show', ['category' => $category, 'tools' => $tools]);
+})->name('categories.show');
 
 Route::get('/tools/{slug}', [ToolController::class, 'show'])->name('tools.show');
 
