@@ -1,14 +1,16 @@
-<textarea
-    id="text-input"
-    rows="10"
-    class="w-full border rounded-lg p-4 focus:ring-2 focus:ring-indigo-500"
-    placeholder="Start typing or paste your text here..."
-></textarea>
+<div class="space-y-4">
+    <textarea
+        id="text-input"
+        rows="10"
+        class="w-full border border-gray-300 rounded-xl p-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+        placeholder="Start typing or paste your text here..."
+    ></textarea>
 
-<div class="mt-4 flex gap-6 text-sm text-gray-700">
-    <div><span id="word-count" class="font-bold text-indigo-600">0</span> words</div>
-    <div><span id="char-count" class="font-bold text-indigo-600">0</span> characters</div>
-    <div><span id="sentence-count" class="font-bold text-indigo-600">0</span> sentences</div>
+    <div class="flex flex-wrap gap-6 text-sm text-gray-700 bg-gray-50 rounded-xl p-4">
+        <div><span id="word-count" class="font-bold text-indigo-600 text-lg">0</span> words</div>
+        <div><span id="char-count" class="font-bold text-indigo-600 text-lg">0</span> characters</div>
+        <div><span id="sentence-count" class="font-bold text-indigo-600 text-lg">0</span> sentences</div>
+    </div>
 </div>
 
 <script>
