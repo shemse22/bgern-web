@@ -1,12 +1,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <div class="space-y-4">
-    <input type="file" id="image-input" accept="image/*" multiple
-        class="w-full border rounded-lg p-3 text-sm">
+    <label for="image-input" class="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <p class="text-gray-600 font-medium">Click to choose images</p>
+        <p class="text-gray-400 text-sm mt-1">or drag and drop</p>
+        <input type="file" id="image-input" accept="image/*" multiple class="hidden">
+    </label>
 
     <div id="preview-list" class="grid grid-cols-3 sm:grid-cols-4 gap-3"></div>
 
-    <button onclick="convertToPdf()" class="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700" id="convert-btn" disabled>
+    <button onclick="convertToPdf()" class="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed" id="convert-btn" disabled>
         Convert to PDF
     </button>
 
