@@ -1,91 +1,500 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
-<div class="space-y-4">
-    <label for="split-pdf-input" class="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-        <p class="text-gray-600 font-medium">Click to choose a PDF file</p>
-        <p class="text-gray-400 text-sm mt-1">or drag and drop</p>
-        <input type="file" id="split-pdf-input" accept="application/pdf" class="hidden">
-    </label>
 
-    <p id="file-name" class="text-sm text-gray-700"></p>
+<div class="max-w-xl mx-auto bg-white rounded-3xl shadow-xl p-6 space-y-6">
 
-    <div id="range-inputs" class="hidden grid grid-cols-2 gap-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">From page</label>
-            <input type="number" id="page-from" min="1" value="1" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">To page</label>
-            <input type="number" id="page-to" min="1" value="1" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-        </div>
-    </div>
 
-    <button onclick="splitPdf()" class="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed" id="split-btn" disabled>
-        Split PDF
-    </button>
+<h1 class="text-3xl font-bold text-center text-gray-900">
+PDF Splitter
+</h1>
 
-    <p id="status-msg" class="text-sm text-gray-500"></p>
+
+<p class="text-center text-gray-500">
+Split PDF pages instantly. Your files stay private.
+</p>
+
+
+
+<label id="drop-area"
+class="
+block
+border-2
+border-dashed
+border-indigo-300
+rounded-3xl
+p-10
+text-center
+cursor-pointer
+hover:bg-indigo-50
+transition
+">
+
+
+<svg class="w-14 h-14 mx-auto text-indigo-500 mb-4"
+fill="none"
+stroke="currentColor"
+viewBox="0 0 24 24">
+
+
+<path
+stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+
+
+</svg>
+
+
+
+<p class="font-semibold text-gray-700">
+Drop PDF here
+</p>
+
+
+<p class="text-sm text-gray-400">
+or click to upload
+</p>
+
+
+
+<input 
+id="pdf-input"
+type="file"
+accept="application/pdf"
+class="hidden">
+
+
+</label>
+
+
+
+
+<div id="info"
+class="hidden bg-gray-50 rounded-xl p-4">
+
+
+<div class="flex justify-between">
+
+<span>
+File
+</span>
+
+<b id="file-name">
+-
+</b>
+
+
 </div>
 
+
+<div class="flex justify-between mt-2">
+
+<span>
+Pages
+</span>
+
+<b id="page-count">
+-
+</b>
+
+
+</div>
+
+
+<div class="flex justify-between mt-2">
+
+<span>
+Size
+</span>
+
+<b id="file-size">
+-
+</b>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div id="controls"
+class="hidden space-y-4">
+
+
+<div class="grid grid-cols-2 gap-4">
+
+
+<div>
+
+<label class="text-sm">
+From page
+</label>
+
+<input 
+id="from-page"
+type="number"
+value="1"
+class="w-full border rounded-xl p-3">
+
+
+</div>
+
+
+
+<div>
+
+<label class="text-sm">
+To page
+</label>
+
+
+<input 
+id="to-page"
+type="number"
+value="1"
+class="w-full border rounded-xl p-3">
+
+
+</div>
+
+
+</div>
+
+
+
+
+<button
+id="split-btn"
+class="
+w-full
+bg-indigo-600
+hover:bg-indigo-700
+text-white
+py-3
+rounded-xl
+font-semibold">
+
+Split PDF
+
+</button>
+
+
+
+<a
+id="download"
+class="
+hidden
+block
+text-center
+w-full
+bg-green-600
+text-white
+py-3
+rounded-xl
+font-semibold">
+
+Download PDF
+
+</a>
+
+
+</div>
+
+
+
+
+<p id="status"
+class="text-center text-sm text-gray-500">
+
+</p>
+
+
+</div>
+
+
+
+
+
 <script>
-    let selectedPdfFile = null;
-    let totalPages = 0;
 
-    document.getElementById('split-pdf-input').addEventListener('change', async (e) => {
-        selectedPdfFile = e.target.files[0];
-        if (!selectedPdfFile) return;
 
-        document.getElementById('file-name').textContent = selectedPdfFile.name;
+let pdfFile=null;
+let totalPages=0;
 
-        const { PDFDocument } = PDFLib;
-        const bytes = await selectedPdfFile.arrayBuffer();
-        const pdf = await PDFDocument.load(bytes);
-        totalPages = pdf.getPageCount();
 
-        document.getElementById('page-from').max = totalPages;
-        document.getElementById('page-to').max = totalPages;
-        document.getElementById('page-to').value = totalPages;
-        document.getElementById('range-inputs').classList.remove('hidden');
-        document.getElementById('split-btn').disabled = false;
-        document.getElementById('status-msg').textContent = `This PDF has ${totalPages} page(s).`;
-    });
 
-    async function splitPdf() {
-        if (!selectedPdfFile) return;
+const input=
+document.getElementById("pdf-input");
 
-        const from = parseInt(document.getElementById('page-from').value);
-        const to = parseInt(document.getElementById('page-to').value);
 
-        if (from < 1 || to > totalPages || from > to) {
-            document.getElementById('status-msg').textContent = 'Invalid page range.';
-            return;
-        }
+const drop=
+document.getElementById("drop-area");
 
-        document.getElementById('status-msg').textContent = 'Splitting...';
 
-        const { PDFDocument } = PDFLib;
-        const bytes = await selectedPdfFile.arrayBuffer();
-        const sourcePdf = await PDFDocument.load(bytes);
-        const newPdf = await PDFDocument.create();
 
-        const indices = [];
-        for (let i = from - 1; i <= to - 1; i++) indices.push(i);
+input.onchange=e=>{
 
-        const pages = await newPdf.copyPages(sourcePdf, indices);
-        pages.forEach(page => newPdf.addPage(page));
+loadPDF(e.target.files[0]);
 
-        const newBytes = await newPdf.save();
-        const blob = new Blob([newBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
+};
 
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `split-pages-${from}-${to}.pdf`;
-        link.click();
 
-        document.getElementById('status-msg').textContent = 'Done! Your split PDF has downloaded.';
-    }
+
+
+drop.ondragover=e=>{
+
+e.preventDefault();
+
+drop.classList.add("bg-indigo-50");
+
+};
+
+
+
+drop.ondrop=e=>{
+
+e.preventDefault();
+
+loadPDF(e.dataTransfer.files[0]);
+
+};
+
+
+
+
+
+async function loadPDF(file){
+
+
+if(!file)return;
+
+
+if(file.type!=="application/pdf"){
+
+alert("Please upload PDF file");
+
+return;
+
+}
+
+
+
+pdfFile=file;
+
+
+
+document.getElementById("file-name")
+.textContent=file.name;
+
+
+
+document.getElementById("file-size")
+.textContent=formatBytes(file.size);
+
+
+
+const bytes=
+await file.arrayBuffer();
+
+
+
+const pdf=
+await PDFLib.PDFDocument.load(bytes);
+
+
+
+totalPages=
+pdf.getPageCount();
+
+
+
+document.getElementById("page-count")
+.textContent=
+totalPages;
+
+
+
+document.getElementById("from-page")
+.max=
+totalPages;
+
+
+document.getElementById("to-page")
+.max=
+totalPages;
+
+
+document.getElementById("to-page")
+.value=
+totalPages;
+
+
+
+document.getElementById("info")
+.classList.remove("hidden");
+
+
+document.getElementById("controls")
+.classList.remove("hidden");
+
+
+document.getElementById("status")
+.textContent=
+"PDF ready";
+
+
+}
+
+
+
+
+
+
+document
+.getElementById("split-btn")
+.onclick=
+async()=>{
+
+
+let from=
+Number(document.getElementById("from-page").value);
+
+
+let to=
+Number(document.getElementById("to-page").value);
+
+
+
+if(from<1 || to>totalPages || from>to){
+
+document.getElementById("status")
+.textContent=
+"Invalid page range";
+
+
+return;
+
+}
+
+
+
+document.getElementById("status")
+.textContent=
+"Processing PDF...";
+
+
+
+const bytes=
+await pdfFile.arrayBuffer();
+
+
+const source=
+await PDFLib.PDFDocument.load(bytes);
+
+
+
+const newPdf=
+await PDFLib.PDFDocument.create();
+
+
+
+let pages=[];
+
+
+for(
+let i=from-1;
+i<=to-1;
+i++
+){
+
+pages.push(i);
+
+}
+
+
+
+const copied=
+await newPdf.copyPages(
+source,
+pages
+);
+
+
+
+copied.forEach(
+p=>newPdf.addPage(p)
+);
+
+
+
+const output=
+await newPdf.save();
+
+
+
+const blob=
+new Blob(
+[output],
+{
+type:"application/pdf"
+}
+);
+
+
+
+const url=
+URL.createObjectURL(blob);
+
+
+
+const download=
+document.getElementById("download");
+
+
+
+download.href=url;
+
+
+download.download=
+`split-${from}-${to}.pdf`;
+
+
+download.classList.remove("hidden");
+
+
+
+document.getElementById("status")
+.textContent=
+"Completed successfully";
+
+
+};
+
+
+
+
+
+function formatBytes(bytes){
+
+if(bytes<1024)
+return bytes+" B";
+
+
+if(bytes<1024*1024)
+return(
+bytes/1024
+).toFixed(1)+" KB";
+
+
+return(
+bytes/1024/1024
+).toFixed(2)+" MB";
+
+}
+
+
 </script>

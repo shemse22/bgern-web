@@ -1,83 +1,517 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<div class="space-y-4">
-    <label for="image-input" class="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        <p class="text-gray-600 font-medium">Click to choose images</p>
-        <p class="text-gray-400 text-sm mt-1">or drag and drop</p>
-        <input type="file" id="image-input" accept="image/*" multiple class="hidden">
-    </label>
 
-    <div id="preview-list" class="grid grid-cols-3 sm:grid-cols-4 gap-3"></div>
+<div class="max-w-xl mx-auto bg-white rounded-3xl shadow-xl p-6 space-y-6">
 
-    <button onclick="convertToPdf()" class="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed" id="convert-btn" disabled>
-        Convert to PDF
-    </button>
 
-    <p id="status-msg" class="text-sm text-gray-500"></p>
+<h1 class="text-3xl font-bold text-center text-gray-900">
+JPG To PDF Converter
+</h1>
+
+
+<p class="text-center text-gray-500">
+Convert images into a PDF document instantly
+</p>
+
+
+
+<label id="drop-area"
+class="
+block
+border-2
+border-dashed
+border-indigo-300
+rounded-3xl
+p-10
+text-center
+cursor-pointer
+hover:bg-indigo-50
+transition
+">
+
+
+<svg class="w-14 h-14 mx-auto text-indigo-500 mb-4"
+fill="none"
+stroke="currentColor"
+viewBox="0 0 24 24">
+
+
+<path
+stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+
+
+</svg>
+
+
+<p class="font-semibold text-gray-700">
+Drop images here
+</p>
+
+
+<p class="text-sm text-gray-400">
+JPG, PNG, WEBP supported
+</p>
+
+
+
+<input
+id="image-input"
+type="file"
+multiple
+accept="image/*"
+class="hidden">
+
+
+</label>
+
+
+
+
+
+<div id="info"
+class="hidden bg-indigo-50 rounded-xl p-4 text-center">
+
+<span id="image-count">
+0
+</span>
+images selected
+
 </div>
 
+
+
+
+<div id="preview-list"
+class="grid grid-cols-3 gap-3">
+
+</div>
+
+
+
+
+<button
+id="convert-btn"
+disabled
+class="
+w-full
+bg-indigo-600
+hover:bg-indigo-700
+disabled:opacity-40
+text-white
+py-3
+rounded-xl
+font-semibold">
+
+Convert To PDF
+
+</button>
+
+
+
+
+<a
+id="download"
+class="
+hidden
+block
+text-center
+bg-green-600
+text-white
+py-3
+rounded-xl
+font-semibold">
+
+Download PDF
+
+</a>
+
+
+
+<p id="status"
+class="text-center text-sm text-gray-500">
+
+</p>
+
+
+
+<p class="text-center text-xs text-gray-400">
+🔒 Images are processed locally in your browser
+</p>
+
+
+</div>
+
+
+
+
+
+
+
 <script>
-    let selectedFiles = [];
 
-    document.getElementById('image-input').addEventListener('change', (e) => {
-        selectedFiles = Array.from(e.target.files);
-        const preview = document.getElementById('preview-list');
-        preview.innerHTML = '';
 
-        selectedFiles.forEach(file => {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(file);
-            img.className = 'w-full h-24 object-cover rounded border';
-            preview.appendChild(img);
-        });
+let images=[];
 
-        document.getElementById('convert-btn').disabled = selectedFiles.length === 0;
-    });
 
-    async function convertToPdf() {
-        if (selectedFiles.length === 0) return;
 
-        const statusMsg = document.getElementById('status-msg');
-        statusMsg.textContent = 'Converting...';
+const input=
+document.getElementById("image-input");
 
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
 
-        for (let i = 0; i < selectedFiles.length; i++) {
-            const file = selectedFiles[i];
-            const imgData = await readFileAsDataURL(file);
-            const img = await loadImage(imgData);
+const drop=
+document.getElementById("drop-area");
 
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            const ratio = Math.min(pageWidth / img.width, pageHeight / img.height);
-            const width = img.width * ratio;
-            const height = img.height * ratio;
 
-            if (i > 0) pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', (pageWidth - width) / 2, (pageHeight - height) / 2, width, height);
-        }
+const preview=
+document.getElementById("preview-list");
 
-        pdf.save('converted.pdf');
-        statusMsg.textContent = 'Done! Your PDF has downloaded.';
-    }
 
-    function readFileAsDataURL(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(file);
-        });
-    }
 
-    function loadImage(src) {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.src = src;
-        });
-    }
+
+
+input.onchange=e=>{
+
+addImages(
+Array.from(e.target.files)
+);
+
+};
+
+
+
+
+
+drop.ondragover=e=>{
+
+e.preventDefault();
+
+};
+
+
+
+drop.ondrop=e=>{
+
+e.preventDefault();
+
+addImages(
+Array.from(e.dataTransfer.files)
+);
+
+};
+
+
+
+
+
+function addImages(files){
+
+
+files.forEach(file=>{
+
+
+if(file.type.startsWith("image/")){
+
+images.push(file);
+
+}
+
+
+});
+
+
+render();
+
+
+}
+
+
+
+
+function render(){
+
+
+preview.innerHTML="";
+
+
+images.forEach((file,index)=>{
+
+
+let div=document.createElement("div");
+
+
+div.className=
+"relative";
+
+
+
+div.innerHTML=`
+
+<img 
+src="${URL.createObjectURL(file)}"
+class="
+w-full
+h-24
+object-cover
+rounded-xl
+border">
+
+
+<button
+onclick="removeImage(${index})"
+class="
+absolute
+top-1
+right-1
+bg-red-500
+text-white
+rounded-full
+w-6
+h-6">
+
+×
+
+
+</button>
+
+`;
+
+
+
+preview.appendChild(div);
+
+
+
+});
+
+
+
+document
+.getElementById("image-count")
+.textContent=
+images.length;
+
+
+
+document
+.getElementById("info")
+.classList
+.toggle(
+"hidden",
+images.length===0
+);
+
+
+
+document
+.getElementById("convert-btn")
+.disabled=
+images.length===0;
+
+
+}
+
+
+
+
+
+function removeImage(index){
+
+images.splice(index,1);
+
+render();
+
+}
+
+
+
+
+
+
+
+document
+.getElementById("convert-btn")
+.onclick=
+async()=>{
+
+
+if(images.length===0)return;
+
+
+const status=
+document.getElementById("status");
+
+
+status.textContent=
+"Creating PDF...";
+
+
+
+const {jsPDF}=window.jspdf;
+
+
+let pdf=
+new jsPDF(
+"p",
+"mm",
+"a4"
+);
+
+
+
+for(
+let i=0;
+i<images.length;
+i++
+){
+
+
+let data=
+await readFile(images[i]);
+
+
+let img=
+await load(data);
+
+
+
+let width=
+pdf.internal.pageSize.getWidth();
+
+
+let height=
+pdf.internal.pageSize.getHeight();
+
+
+
+let ratio=
+Math.min(
+width/img.width,
+height/img.height
+);
+
+
+
+let imgWidth=
+img.width*ratio;
+
+
+let imgHeight=
+img.height*ratio;
+
+
+
+if(i>0)
+pdf.addPage();
+
+
+
+pdf.addImage(
+data,
+"JPEG",
+(width-imgWidth)/2,
+(height-imgHeight)/2,
+imgWidth,
+imgHeight
+);
+
+
+
+}
+
+
+
+
+
+let blob=
+pdf.output(
+"blob"
+);
+
+
+
+let url=
+URL.createObjectURL(blob);
+
+
+
+let download=
+document.getElementById("download");
+
+
+
+download.href=url;
+
+
+download.download=
+"images-to-pdf.pdf";
+
+
+download.classList.remove("hidden");
+
+
+
+status.textContent=
+"PDF created successfully";
+
+
+};
+
+
+
+
+
+
+
+
+function readFile(file){
+
+
+return new Promise(resolve=>{
+
+
+let reader=
+new FileReader();
+
+
+reader.onload=
+()=>resolve(reader.result);
+
+
+reader.readAsDataURL(file);
+
+
+});
+
+
+}
+
+
+
+
+function load(src){
+
+
+return new Promise(resolve=>{
+
+
+let img=
+new Image();
+
+
+img.onload=
+()=>resolve(img);
+
+
+img.src=src;
+
+
+});
+
+
+}
+
+
 </script>
