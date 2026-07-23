@@ -4,8 +4,20 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\Admin\ToolController as AdminToolController;
+use App\Http\Controllers\Admin\BlogPostController;
 use App\Models\Tool;
 use App\Models\Category;
+use App\Models\BlogPost;
+
+Route::get('/blog', function () {
+    $posts = BlogPost::where('is_published', true)->latest('published_at')->get();
+    return view('blog.index', ['posts' => $posts]);
+})->name('blog.index');
+
+Route::get('/blog/{slug}', function (string $slug) {
+    $post = BlogPost::where('slug', $slug)->where('is_published', true)->firstOrFail();
+    return view('blog.show', ['post' => $post]);
+})->name('blog.show');
 
 Route::get('/tools', function () {
     $query = request('q');
@@ -34,6 +46,7 @@ Route::get('/tools/{slug}', [ToolController::class, 'show'])->name('tools.show')
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('tools', AdminToolController::class)->except(['show']);
+    Route::resource('blog', BlogPostController::class)->except(['show']);
 });
 
 Route::get('/', function () {
