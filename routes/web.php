@@ -9,6 +9,57 @@ use App\Models\Tool;
 use App\Models\Category;
 use App\Models\BlogPost;
 
+
+
+
+Route::get('/sitemap.xml', function () {
+    $tools = Tool::where('is_active', true)->get();
+    $categories = Category::all();
+    $posts = BlogPost::where('is_published', true)->get();
+
+    $urls = collect();
+
+    $urls->push(['loc' => url('/'), 'lastmod' => now()->toAtomString(), 'priority' => '1.0']);
+    $urls->push(['loc' => route('tools.index'), 'lastmod' => now()->toAtomString(), 'priority' => '0.9']);
+    $urls->push(['loc' => route('categories.index'), 'lastmod' => now()->toAtomString(), 'priority' => '0.7']);
+    $urls->push(['loc' => route('blog.index'), 'lastmod' => now()->toAtomString(), 'priority' => '0.7']);
+
+    foreach ($tools as $tool) {
+        $urls->push([
+            'loc' => route('tools.show', $tool->slug),
+            'lastmod' => $tool->updated_at->toAtomString(),
+            'priority' => '0.8',
+        ]);
+    }
+
+    foreach ($categories as $category) {
+        $urls->push([
+            'loc' => route('categories.show', $category->slug),
+            'lastmod' => $category->updated_at->toAtomString(),
+            'priority' => '0.6',
+        ]);
+    }
+
+    foreach ($posts as $post) {
+        $urls->push([
+            'loc' => route('blog.show', $post->slug),
+            'lastmod' => $post->updated_at->toAtomString(),
+            'priority' => '0.6',
+        ]);
+    }
+
+    $xml = view('sitemap', ['urls' => $urls])->render();
+
+    return response($xml, 200)->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
+
+Route::post('/blog/upload-image', function (\Illuminate\Http\Request $request) {
+    $request->validate(['image' => ['required', 'image', 'max:2048']]);
+    $path = $request->file('image')->store('blog-images', 'public');
+    return response()->json(['url' => asset('storage/' . $path)]);
+})->name('admin.blog.upload-image');
+
 Route::get('/blog', function () {
     $posts = BlogPost::where('is_published', true)->latest('published_at')->get();
     return view('blog.index', ['posts' => $posts]);
