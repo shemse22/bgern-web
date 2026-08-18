@@ -11,13 +11,24 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ $canonical ?? url()->current() }}">
     <meta name="twitter:card" content="summary">
+    <meta name="google-site-verification" content="u8H8DU6XBXmtliUjNxBUGVA3xsxGiLtEVWWfmXwF53k">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     {{ $head ?? '' }}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
     <nav class="bg-white border-b px-6 py-4">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
-            <a href="/" class="font-bold text-xl text-indigo-600">Bgern</a>
+            <a href="/" class="flex items-center gap-2">
+                <img src="{{ asset('logo.png') }}" alt="Bgern" class="w-8 h-8">
+                <span class="font-bold text-xl text-indigo-600">Bgern</span>
+            </a>
 
             <div class="hidden md:flex items-center gap-6 text-sm text-gray-700">
                 <a href="{{ route('tools.index') }}" class="hover:text-indigo-600">All Tools</a>
