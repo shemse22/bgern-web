@@ -1,4 +1,4 @@
-```blade
+
 <x-layouts.public
     :title="'About Bgern - Free Online Tools'"
     :description="'Learn about Bgern, a free online tools platform for PDF, image, text, and everyday digital tasks.'"
