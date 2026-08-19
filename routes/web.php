@@ -8,8 +8,44 @@ use App\Http\Controllers\Admin\BlogPostController;
 use App\Models\Tool;
 use App\Models\Category;
 use App\Models\BlogPost;
+use App\Mail\ContactFormMail;
+use Illuminate\Support\Facades\Mail;
 
+Route::get('/privacy-policy', function () {
+    return view('pages.privacy-policy');
+})->name('privacy-policy');
 
+Route::get('/terms', function () {
+    return view('pages.terms');
+})->name('terms');
+
+Route::get('/about', function () {
+    return view('pages.about');
+})->name('about');
+
+Route::get('/contact', function () {
+    return view('pages.contact');
+})->name('contact');
+
+Route::post('/contact', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email'],
+        'message' => ['required', 'string', 'max:2000'],
+    ]);
+
+    Mail::to('contact@bgern.com')->send(new ContactFormMail(
+        $request->input('name'),
+        $request->input('email'),
+        $request->input('message')
+    ));
+
+    return back()->with('status', 'Thanks for reaching out — we\'ll get back to you soon.');
+})->name('contact.submit');
+
+Route::get('/faq', function () {
+    return view('pages.faq');
+})->name('faq');
 
 
 Route::get('/sitemap.xml', function () {

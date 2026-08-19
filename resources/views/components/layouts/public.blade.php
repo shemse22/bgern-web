@@ -34,7 +34,7 @@
                 <a href="{{ route('tools.index') }}" class="hover:text-indigo-600">All Tools</a>
                 <a href="{{ route('categories.index') }}" class="hover:text-indigo-600">Categories</a>
                 <a href="{{ route('blog.index') }}" class="hover:text-indigo-600">Blog</a>
-                <a href="/" class="hover:text-indigo-600">Contact</a>
+                <a href="{{ route('contact') }}" class="hover:text-indigo-600">Contact</a>
             </div>
 
             <div class="flex items-center gap-3">
@@ -49,12 +49,21 @@
         {{ $slot }}
     </main>
 
-    <footer class="bg-white border-t mt-16 py-10 px-6">
-        <div class="max-w-6xl mx-auto text-center text-gray-500 text-sm">
+<footer class="bg-white border-t mt-16 py-10 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-600 mb-6">
+            <a href="{{ route('about') }}" class="hover:text-indigo-600">About</a>
+            <a href="{{ route('contact') }}" class="hover:text-indigo-600">Contact</a>
+            <a href="{{ route('faq') }}" class="hover:text-indigo-600">FAQ</a>
+            <a href="{{ route('privacy-policy') }}" class="hover:text-indigo-600">Privacy Policy</a>
+            <a href="{{ route('terms') }}" class="hover:text-indigo-600">Terms of Service</a>
+        </div>
+        <div class="text-center text-gray-500 text-sm">
             <p class="font-bold text-gray-900 mb-2">Bgern</p>
             <p>All-in-one online tools. Free, fast, and secure for everyone.</p>
             <p class="mt-4">&copy; {{ date('Y') }} Bgern. All rights reserved.</p>
         </div>
-    </footer>
+    </div>
+</footer>
 </body>
 </html>
