@@ -11,8 +11,6 @@ use App\Models\BlogPost;
 use App\Mail\ContactFormMail;
 use Illuminate\Support\Facades\Mail;
 
-
-
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard', [
@@ -64,7 +62,6 @@ Route::get('/faq', function () {
     return view('pages.faq');
 })->name('faq');
 
-
 Route::get('/sitemap.xml', function () {
     $tools = Tool::where('is_active', true)->get();
     $categories = Category::all();
@@ -106,7 +103,6 @@ Route::get('/sitemap.xml', function () {
     return response($xml, 200)->header('Content-Type', 'application/xml');
 })->name('sitemap');
 
-
 Route::post('/blog/upload-image', function (\Illuminate\Http\Request $request) {
     $request->validate(['image' => ['required', 'image', 'max:2048']]);
     $path = $request->file('image')->store('blog-images', 'public');
@@ -134,7 +130,6 @@ Route::get('/tools', function () {
     return view('tools.index', ['tools' => $tools]);
 })->name('tools.index');
 
-
 Route::get('/categories', function () {
     $categories = Category::withCount('tools')->get();
     return view('categories.index', ['categories' => $categories]);
@@ -147,11 +142,6 @@ Route::get('/categories/{slug}', function (string $slug) {
 })->name('categories.show');
 
 Route::get('/tools/{slug}', [ToolController::class, 'show'])->name('tools.show');
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('tools', AdminToolController::class)->except(['show']);
-    Route::resource('blog', BlogPostController::class)->except(['show']);
-});
 
 Route::get('/', function () {
     $query = request('q');

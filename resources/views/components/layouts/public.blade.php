@@ -37,11 +37,7 @@
                 <a href="{{ route('contact') }}" class="hover:text-indigo-600">Contact</a>
             </div>
 
-            <div class="flex items-center gap-3">
-                <a href="{{ route('login') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700">
-                    Sign In
-                </a>
-            </div>
+
         </div>
     </nav>
 
