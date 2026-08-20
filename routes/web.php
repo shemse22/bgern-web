@@ -11,6 +11,23 @@ use App\Models\BlogPost;
 use App\Mail\ContactFormMail;
 use Illuminate\Support\Facades\Mail;
 
+
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return view('admin.dashboard', [
+            'toolCount' => \App\Models\Tool::count(),
+            'categoryCount' => \App\Models\Category::count(),
+            'postCount' => \App\Models\BlogPost::count(),
+            'publishedPostCount' => \App\Models\BlogPost::where('is_published', true)->count(),
+        ]);
+    })->name('dashboard');
+
+    Route::resource('tools', AdminToolController::class)->except(['show']);
+    Route::resource('blog', BlogPostController::class)->except(['show']);
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['show']);
+});
+
 Route::get('/privacy-policy', function () {
     return view('pages.privacy-policy');
 })->name('privacy-policy');
