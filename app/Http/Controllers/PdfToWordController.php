@@ -17,12 +17,12 @@ class PdfToWordController extends Controller
         $uploadedFile = $request->file('pdf');
         $uniqueId = Str::uuid();
 
-        $inputPath = storage_path("app/tmp/{$uniqueId}.pdf");
-        $outputPath = storage_path("app/tmp/{$uniqueId}.docx");
-
         if (!is_dir(storage_path('app/tmp'))) {
             mkdir(storage_path('app/tmp'), 0755, true);
         }
+
+        $inputPath = storage_path("app/tmp/{$uniqueId}.pdf");
+        $outputPath = storage_path("app/tmp/{$uniqueId}.docx");
 
         $uploadedFile->move(storage_path('app/tmp'), "{$uniqueId}.pdf");
 
@@ -43,19 +43,10 @@ class PdfToWordController extends Controller
 
         $originalName = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
 
-        return response()->download($outputPath, "{$originalName}.docx")
-            ->deleteFileAfterSend(true)
-            ->deleteFileAfterSend(function () use ($inputPath) {
-                @unlink($inputPath);
-            });
-    }
-}
-        $originalName = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-
-        $response = response()->download($outputPath, "{$originalName}.docx")->deleteFileAfterSend(true);
-
         register_shutdown_function(function () use ($inputPath) {
             @unlink($inputPath);
         });
 
-        return $response;
+        return response()->download($outputPath, "{$originalName}.docx")->deleteFileAfterSend(true);
+    }
+}
