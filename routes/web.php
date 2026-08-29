@@ -11,6 +11,8 @@ use App\Models\BlogPost;
 use App\Mail\ContactFormMail;
 use Illuminate\Support\Facades\Mail;
 
+
+Route::post('/tools/background-remover/remove', [\App\Http\Controllers\BackgroundRemoverController::class, 'remove'])->name('background-remover.remove');
 Route::post('/tools/pdf-to-word/convert', [\App\Http\Controllers\PdfToWordController::class, 'convert'])->name('pdf-to-word.convert');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
