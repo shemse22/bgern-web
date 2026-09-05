@@ -1,4 +1,4 @@
-<x-layouts.public :title="$tool->name . ' - Free Online Tool | Bgern'" :description="$tool->description" :canonical="route('tools.show', $tool->slug)">
+<x-layouts.public :title="($tool->meta_title ?: $tool->name) . ' - Free Online Tool | Bgern'" :description="$tool->meta_description ?: $tool->description" :canonical="route('tools.show', $tool->slug)">
     <x-slot:head>
         @if($tool->faq && count($tool->faq) > 0)
             <script type="application/ld+json">
@@ -20,14 +20,13 @@
         {!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'SoftwareApplication',
-            'na<x-layouts.public :title="($tool->meta_title ?: $tool->name) . ' - Free Online Tool | Bgern'" :description="$tool->meta_description ?: $tool->description" :canonical="route('tools.show', $tool->slug)">me' => $tool->name,
+            'name' => $tool->name,
             'description' => $tool->description,
             'applicationCategory' => 'UtilityApplication',
             'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'USD'],
         ]) !!}
         </script>
     </x-slot:head>
-
     <div class="max-w-2xl mx-auto py-16 px-4">
         <div class="flex items-center gap-4 mb-6">
             <div class="w-14 h-14 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
@@ -40,11 +39,9 @@
                 <p class="text-gray-500 text-sm">{{ $tool->description }}</p>
             </div>
         </div>
-
         <div class="bg-white border rounded-2xl shadow-sm p-6 md:p-8">
             @include($componentView)
         </div>
-
         @if($tool->faq)
             <div class="mt-10 bg-white border rounded-2xl p-6 md:p-8">
                 <h2 class="text-lg font-bold mb-4 text-gray-900">Frequently Asked Questions</h2>
