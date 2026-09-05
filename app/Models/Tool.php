@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Tool extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'description', 'how_to', 'faq', 'component', 'is_active',
+       'meta_title', 'meta_description', 'name', 'slug', 'description', 'how_to', 'faq', 'component', 'is_active',
     ];
 
     protected $casts = [

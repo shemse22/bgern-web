@@ -18,6 +18,16 @@
 </div>
 
 <div>
+    <label class="block text-sm font-medium mb-1">Meta Title (for search engines, defaults to Name if blank)</label>
+    <input type="text" name="meta_title" value="{{ old('meta_title', $tool->meta_title ?? '') }}" class="w-full border rounded-md p-2">
+</div>
+
+<div>
+    <label class="block text-sm font-medium mb-1">Meta Description (for search engines, defaults to Description if blank)</label>
+    <textarea name="meta_description" rows="2" class="w-full border rounded-md p-2">{{ old('meta_description', $tool->meta_description ?? '') }}</textarea>
+</div>
+
+<div>
     <label class="block text-sm font-medium mb-1">How To</label>
     <textarea name="how_to" rows="2" class="w-full border rounded-md p-2">{{ old('how_to', $tool->how_to ?? '') }}</textarea>
 </div>

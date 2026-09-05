@@ -27,6 +27,8 @@ class ToolController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:tools,slug'],
             'description' => ['nullable', 'string'],
+            'meta_title' => ['nullable', 'string', 'max:255'],
+            'meta_description' => ['nullable', 'string', 'max:500'],
             'how_to' => ['nullable', 'string'],
             'component' => ['required', 'string', 'max:255'],
             'is_active' => ['boolean'],
@@ -55,6 +57,8 @@ class ToolController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:tools,slug,' . $tool->id],
             'description' => ['nullable', 'string'],
+            'meta_title' => ['nullable', 'string', 'max:255'],
+            'meta_description' => ['nullable', 'string', 'max:500'],
             'how_to' => ['nullable', 'string'],
             'component' => ['required', 'string', 'max:255'],
             'is_active' => ['boolean'],
@@ -77,9 +81,9 @@ class ToolController extends Controller
         return redirect()->route('admin.tools.index')->with('status', 'Tool deleted.');
     }
 
-   private function parseFaq(?string $raw): array
-{
-    $lines = array_filter(array_map('trim', explode("\n", $raw ?? '')));
+    private function parseFaq(?string $raw): array
+    {
+        $lines = array_filter(array_map('trim', explode("\n", $raw ?? '')));
         $faq = [];
 
         foreach ($lines as $line) {

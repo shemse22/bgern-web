@@ -20,7 +20,7 @@
         {!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'SoftwareApplication',
-            'name' => $tool->name,
+            'na<x-layouts.public :title="($tool->meta_title ?: $tool->name) . ' - Free Online Tool | Bgern'" :description="$tool->meta_description ?: $tool->description" :canonical="route('tools.show', $tool->slug)">me' => $tool->name,
             'description' => $tool->description,
             'applicationCategory' => 'UtilityApplication',
             'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'USD'],
